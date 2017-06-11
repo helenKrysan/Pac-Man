@@ -2,8 +2,14 @@ package com.mazurkevych.krysan;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -12,7 +18,8 @@ public class Labyrinth extends JPanel {
 	private static final long serialVersionUID = 1L;
 
 	public static byte objectsPresent[][];
-	Graphics m;
+	public static int turn;
+	static BufferedImage imageClyde;
 
 	public Labyrinth() {
 		// 1 - wall
@@ -20,7 +27,10 @@ public class Labyrinth extends JPanel {
 		// 2 - empty square
 		// 3 - big coin
 		// 4 - Pac-Man
-		// 5 - ghost
+		// 5 - Blinky
+		// 6 - Pinky
+		// 7 - Inky
+		// 8 - Clyde
 		objectsPresent = new byte[][] { { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
 				{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
 				{ 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1 },
@@ -28,22 +38,28 @@ public class Labyrinth extends JPanel {
 				{ 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1 },
 				{ 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1 },
 				{ 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 1, 2, 1, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1 },
-				{ 1, 0, 0, 0, 1, 0, 3, 1, 0, 1, 5, 2, 2, 1, 0, 1, 3, 0, 1, 0, 0, 0, 1 },
+				{ 1, 0, 0, 0, 1, 0, 3, 1, 0, 1, 5, 2, 6, 1, 0, 1, 3, 0, 1, 0, 0, 0, 1 },
 				{ 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 2, 2, 2, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1 },
-				{ 1, 0, 1, 0, 1, 0, 0, 0, 0, 1, 2, 2, 2, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1 },
+				{ 1, 0, 1, 0, 1, 0, 0, 0, 0, 1, 7, 2, 8, 1, 0, 0, 0, 0, 1, 0, 1, 0, 1 },
 				{ 1, 0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 1 },
 				{ 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1 },
 				{ 1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1 },
 				{ 1, 0, 0, 0, 3, 1, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 1, 3, 0, 0, 0, 1 },
 				{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 } };
 
+		turn = 0;
+		 try {                
+	          imageClyde = ImageIO.read(new File("clyde.png"));
+	       } catch (IOException ex) {
+	           ex.printStackTrace();
+	       }
 	}
 
 	public void paint(Graphics g) {
 
 		int x = 50;
-		int y = 50;  
-	
+		int y = 50;
+
 		for (int i = 0; i < 15; i++) {
 			for (int j = 0; j < 23; j++) {
 				if (objectsPresent[i][j] == 1) {
@@ -57,17 +73,32 @@ public class Labyrinth extends JPanel {
 				} else if (objectsPresent[i][j] == 4) {
 					g.setColor(Color.BLACK);
 					g.fillRect(x, y, 25, 25);
-				    g.setColor(Color.YELLOW);
-				 //   g.fillOval(x + 7, y + 7, 17, 17);
-				//	g.fillArc(x + 7, y + 7,150,150,30,300);
-					g.fillArc(x + 7, y + 7, 17, 17, 30, 300);
-			    } else if (objectsPresent[i][j] == 5) {
+					g.setColor(Color.YELLOW);
+					g.fillArc(x + 7, y + 7, 17, 17, 30 + turn, 300);
+					// g.fillArc(x + 7, y + 7, 17, 17, 210, 300);
+
+				} else if (objectsPresent[i][j] == 5) {
 					g.setColor(Color.BLACK);
 					g.fillRect(x, y, 25, 25);
-				    g.setColor(Color.RED);
+					g.setColor(Color.RED);
 					g.fillOval(x + 7, y + 7, 17, 17);
-					}  
-				else if (objectsPresent[i][j] == 3) {
+				} else if (objectsPresent[i][j] == 6) {
+					g.setColor(Color.BLACK);
+					g.fillRect(x, y, 25, 25);
+					g.setColor(Color.PINK);
+					g.fillOval(x + 7, y + 7, 17, 17);
+				} else if (objectsPresent[i][j] == 7) {
+						g.setColor(Color.BLACK);
+						g.fillRect(x, y, 25, 25);
+						g.setColor(Color.CYAN);
+						g.fillOval(x + 7, y + 7, 17, 17);
+				} else if (objectsPresent[i][j] == 8) {
+					g.setColor(Color.BLACK);
+					g.fillRect(x, y, 25, 25);
+					g.setColor(Color.ORANGE);
+//					g.fillOval(x + 7, y + 7, 17, 17);
+					g.drawImage(imageClyde, x + 7, y + 7, this);
+				} else if (objectsPresent[i][j] == 3) {
 					g.setColor(Color.BLACK);
 					g.fillRect(x, y, 25, 25);
 					g.setColor(Color.BLUE);
@@ -82,29 +113,5 @@ public class Labyrinth extends JPanel {
 			x = 50;
 		}
 	}
-
-
-
-/*	public void keyPressed(KeyEvent e) {
-		int keyCode = e.getKeyCode();
-		if (keyCode == KeyEvent.VK_LEFT) {
-
-			f.getContentPane().repaint();
-		}
-
-		else if (keyCode == KeyEvent.VK_RIGHT) {
-			f.getContentPane().repaint();
-		}
-
-		else if (keyCode == KeyEvent.VK_UP) {
-			f.getContentPane().repaint();
-		}
-
-		else if (keyCode == KeyEvent.VK_DOWN) {
-			f.getContentPane().repaint();
-
-		} 
-
-	}*/
 
 }

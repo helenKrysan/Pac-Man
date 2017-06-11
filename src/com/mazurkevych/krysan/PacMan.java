@@ -4,122 +4,112 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.JFrame;
 import javax.swing.Timer;
 
 import sun.font.CreatedFontTracker;
 
-public class PacMan implements KeyListener {
+public class PacMan implements Runnable {
 
-	Timer frameTimer;
-	Labyrinth lab = new Labyrinth();
 	public static int x = 13;
 	public static int y = 11;
 	public static int lastx = 13;
 	public static int lasty = 11;
-	static JFrame f;
-	static Ghost blinky = new Ghost("Blinky");
-	// public Circle pacMan;
+	public static char direction; 
+	public static boolean fleeMode = false;
+	
 
 	public PacMan() {
-		// k = g.fillArc(x + 7, y + 7,17,17,30,300);
-
-		// pacMan = new Circle();
-		f = new JFrame();
-		f.setSize(700, 500);
-		f.add(lab);
-		f.setBackground(Color.BLACK);
-		f.setVisible(true);
-		f.setResizable(false);
-		lab.addKeyListener(this);
-		lab.setFocusable(true);
+		PacMan.direction = 'r';
 	}
 
 	public void pacManMove() {
-		this.x--;
-	}
-
-	@Override
-	public void keyPressed(KeyEvent e) {
-		int keyCode = e.getKeyCode();
 		int extraCoordinate;
-		
-		if (keyCode == KeyEvent.VK_O) {
-			lab.repaint();
-		}
-		
-		if (keyCode == KeyEvent.VK_LEFT) {
+
+		if (PacMan.direction == 'l') {
 			extraCoordinate = y - 1;
-			if (lab.objectsPresent[x][extraCoordinate] != 1) {
+			if (Game.lab.objectsPresent[x][extraCoordinate] != 1) {
 				lasty = y;
 				lastx = x;
 				y--;
-				lab.objectsPresent[lastx][lasty] = 2;
-				lab.objectsPresent[x][y] = 4;
-//				lab.repaint();
+				Game.lab.turn = 180;
+				// lab.repaint();
 			}
 		}
 
-		else if (keyCode == KeyEvent.VK_RIGHT) {
+		else if (PacMan.direction =='r') {
 			extraCoordinate = y + 1;
-			if (lab.objectsPresent[x][extraCoordinate] != 1) {
+			if (Game.lab.objectsPresent[x][extraCoordinate] != 1) {
 				lasty = y;
 				lastx = x;
 				y++;
-				lab.objectsPresent[lastx][lasty] = 2;
-				lab.objectsPresent[x][y] = 4;
-//				lab.repaint();
+				Game.lab.turn = 0;
+				// lab.repaint();
 			}
 		}
 
-		else if (keyCode == KeyEvent.VK_UP) {
+		else if (PacMan.direction == 'u') {
 			extraCoordinate = x - 1;
-			if (lab.objectsPresent[extraCoordinate][y] != 1) {
+			if (Game.lab.objectsPresent[extraCoordinate][y] != 1) {
 				lasty = y;
 				lastx = x;
 				x--;
-				lab.objectsPresent[lastx][lasty] = 2;
-				lab.objectsPresent[x][y] = 4;
-//				lab.repaint();
+				Game.lab.turn = 90;
+				// lab.repaint();
 			}
 		}
 
-		else if (keyCode == KeyEvent.VK_DOWN) {
+		else if (PacMan.direction == 'd') {
 			extraCoordinate = x + 1;
-			if (lab.objectsPresent[extraCoordinate][y] != 1) {
+			if (Game.lab.objectsPresent[extraCoordinate][y] != 1) {
 				lasty = y;
 				lastx = x;
 				x++;
-				lab.objectsPresent[lastx][lasty] = 2;
-				lab.objectsPresent[x][y] = 4;
-//				lab.repaint();
+				Game.lab.turn = 270;
+				// lab.repaint();
 			}
 		}
-		lab.repaint();
-
+		Game.lab.objectsPresent[lastx][lasty] = 2;
+		switch(Game.lab.objectsPresent[x][y]){
+		case 0: {
+			Game.score += 50;
+			break;
+		}
+		case 3: {
+			Game.score += 150;
+			PacMan.fleeMode = true;
+			break;
+		}
+		}
+		Game.lab.objectsPresent[x][y] = 4;
+		Game.lab.repaint();
 	}
 
 	@Override
-	public void keyReleased(KeyEvent e) {
-		// TODO Auto-generated method stub
+	public void run() {
+		while (true) {
+			try {
+				if (Thread.interrupted()) {
+					return;
+				}
+				pacManMove();
+				Thread.sleep(300);
+				Game.lab.repaint();
 
-	}
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 
-	@Override
-	public void keyTyped(KeyEvent e) {
-		// TODO Auto-generated method stub
-
+		}
+		
 	}
 	
-
-	public static void main(String[] args) {
-		PacMan pacman = new PacMan();
-		Thread blinkyThread = new Thread(blinky);
-		blinkyThread.start();
-    
-	}
 
 }
