@@ -18,16 +18,24 @@ import sun.font.CreatedFontTracker;
 
 public class PacMan implements Runnable {
 
-	public static int x = 13;
-	public static int y = 11;
-	public static int lastx = 13;
-	public static int lasty = 11;
+	public static int x;
+	public static int y;
+	public static int lastx;
+	public static int lasty;
 	public static char direction; 
-	public static boolean fleeMode = false;
+	public static boolean fleeMode;
+	public static byte life;
 	
 
 	public PacMan() {
 		PacMan.direction = 'r';
+		this.life = 3;
+		this.x = 13;
+		this.y = 11;
+		this.lastx = 13;
+		this.lasty = 11;
+		fleeMode = false;
+//		Labyrinth.sounds.newGame();
 	}
 
 	public void pacManMove() {
@@ -87,16 +95,37 @@ public class PacMan implements Runnable {
 			PacMan.fleeMode = true;
 			break;
 		}
+		case 5: case 6: case 7: case 8: {
+			life--;
+			break;
+		}
+		}
+		if (life == 0) {
+			Labyrinth.gameMode = "gameOver";
+//			Labyrinth.sounds.death();
+		}
+		if(Game.score == 8300){
+			Labyrinth.gameMode = "gameWin";
 		}
 		Game.lab.objectsPresent[x][y] = 4;
+		if(Game.lab.pos == 60){
+			Game.lab.pos = 0;
+		} else {
+			Game.lab.pos += 15;
+		}
 		Game.lab.repaint();
 	}
 
+	
+	
 	@Override
 	public void run() {
 		while (true) {
 			try {
 				if (Thread.interrupted()) {
+					return;
+				}
+				if (Labyrinth.gameMode.equals("gameOver")||Labyrinth.gameMode.equals("gameWin")){
 					return;
 				}
 				pacManMove();

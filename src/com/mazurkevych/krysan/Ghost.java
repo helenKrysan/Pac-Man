@@ -29,8 +29,9 @@ public class Ghost implements Runnable {
 	// f - flee
 
 	public Ghost(String name) {
+	  
 		this.name = name;
-		time = 750;
+		time = 700-Game.level*200;
 		if (name.equals("Blinky")) {
 			ghostx = 7;
 			ghosty = 10;
@@ -286,6 +287,10 @@ public class Ghost implements Runnable {
 			currSquare = Game.lab.objectsPresent[ghostx][ghosty];
 			break;
 		}
+		case 4: {
+			PacMan.life--;
+			break;
+		}
 		case 5: {
 			currSquare = Game.blinky.currSquare;
 			break;
@@ -337,6 +342,9 @@ public class Ghost implements Runnable {
 		while (true) {
 			try {
 				if (Thread.interrupted()) {
+					return;
+				}
+				if (Labyrinth.gameMode.equals("gameOver")||Labyrinth.gameMode.equals("gameWin")){
 					return;
 				}
 				if (PacMan.fleeMode){
