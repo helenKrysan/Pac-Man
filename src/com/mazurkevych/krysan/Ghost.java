@@ -341,9 +341,9 @@ public class Ghost implements Runnable {
 		int timeFlee = 0;
 		while (true) {
 			try {
-				if (Thread.interrupted()) {
+		/*		if (Thread.interrupted()) {
 					return;
-				}
+				} */
 				if (Labyrinth.gameMode.equals("gameOver")||Labyrinth.gameMode.equals("gameWin")){
 					return;
 				}

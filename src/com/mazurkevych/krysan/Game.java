@@ -13,7 +13,7 @@ import javax.swing.JLabel;
 import sun.applet.Main;
 
 public class Game implements KeyListener {
-	static JFrame f;
+	private JFrame f;
 	static int score;
 	static Ghost blinky = new Ghost("Blinky");
 	static Labyrinth lab = new Labyrinth();
@@ -32,7 +32,7 @@ public class Game implements KeyListener {
 
 	public Game() {
 		f = new JFrame();
-		f.setSize(700, 500);
+		f.setSize(700*Labyrinth.dimension, 500*Labyrinth.dimension);
 		f.add(lab);
 		f.setBackground(Color.BLACK);
 		f.setVisible(true);
@@ -83,8 +83,12 @@ public class Game implements KeyListener {
 		else if (keyCode == KeyEvent.VK_DOWN) {
 			PacMan.direction = 'd';
 		} else if ((keyCode == KeyEvent.VK_ENTER)&&(Labyrinth.gameMode.equals("gameWin")||Labyrinth.gameMode.equals("gameOver"))){
-			Labyrinth.gameMode = "game";
-			score = 0;
+			int lastScore = Game.score;
+			if(Labyrinth.gameMode.equals("gameWin")) Game.score = lastScore;
+			else score = 0;
+			int lastLevel = Game.level;
+			if(Labyrinth.gameMode.equals("gameWin")) Game.level = lastLevel + 1;
+			else level = 0;
 			lab = new Labyrinth();
 			f.add(lab);
 			pacman = new PacMan();
@@ -92,9 +96,10 @@ public class Game implements KeyListener {
 			blinky = new Ghost("Blinky");
 			pinky = new Ghost("Pinky");
 			inky = new Ghost("Inky");
-			int lastLevel = Game.level;
+			
 			new Game();
-			Game.level = lastLevel + 1;
+	//		if(Labyrinth.gameMode.equals("gameWin")) Game.level = lastLevel + 1;
+			Labyrinth.gameMode = "game";
 			pacmanThread = new Thread(pacman);
 			pacmanThread.setDaemon(true);
 			pacmanThread.start();

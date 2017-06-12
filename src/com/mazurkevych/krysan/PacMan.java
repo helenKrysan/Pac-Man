@@ -100,11 +100,11 @@ public class PacMan implements Runnable {
 			break;
 		}
 		}
-		if (life == 0) {
+		if (life <= 0) {
 			Labyrinth.gameMode = "gameOver";
 //			Labyrinth.sounds.death();
 		}
-		if(Game.score == 8300){
+		if(Game.score%8300==0){
 			Labyrinth.gameMode = "gameWin";
 		}
 		Game.lab.objectsPresent[x][y] = 4;
