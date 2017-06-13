@@ -35,7 +35,7 @@ public class PacMan implements Runnable {
 		this.lastx = 13;
 		this.lasty = 11;
 		fleeMode = false;
-//		Labyrinth.sounds.newGame();
+		Labyrinth.sounds.nomNom();
 	}
 
 	public void pacManMove() {
@@ -102,10 +102,11 @@ public class PacMan implements Runnable {
 		}
 		if (life <= 0) {
 			Labyrinth.gameMode = "gameOver";
-//			Labyrinth.sounds.death();
+			Labyrinth.sounds.death();
 		}
 		if(Game.score%8300==0){
 			Labyrinth.gameMode = "gameWin";
+			Labyrinth.sounds.newGame();
 		}
 		Game.lab.objectsPresent[x][y] = 4;
 		if(Game.lab.pos == 60){

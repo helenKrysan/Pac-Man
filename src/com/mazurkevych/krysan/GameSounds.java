@@ -37,6 +37,7 @@ public class GameSounds {
 			death.open(audioIn);
 
 		} catch (Exception e) {
+			e.getStackTrace();
 		}
 	}
 

@@ -22,6 +22,7 @@ public class Ghost implements Runnable {
 	int inkyOffsetX;
 	int inkyOffsetY;
 	int time;
+	char ghostDirection;
 
 	// behavior:
 	// c - chase
@@ -39,6 +40,7 @@ public class Ghost implements Runnable {
 			desty = PacMan.y;
 			currSquare = 2;
 			behavior = 'c';
+			ghostDirection = 'r';
 		}
 
 		else if (name.equals("Pinky")) {
@@ -48,6 +50,7 @@ public class Ghost implements Runnable {
 			desty = PacMan.y;
 			currSquare = 2;
 			behavior = 'c';
+			ghostDirection = 'd';
 		}
 		else if (name.equals("Inky")) {
 			ghostx = 9;
@@ -56,6 +59,7 @@ public class Ghost implements Runnable {
 			desty = PacMan.y;
 			currSquare = 2;
 			behavior = 'c';
+			ghostDirection = 'u';
 		}
 
 		if (name.equals("Clyde")) {
@@ -65,6 +69,7 @@ public class Ghost implements Runnable {
 			desty = PacMan.y;
 			currSquare = 2;
 			behavior = 'c';
+			ghostDirection = 'l';
 		}
 
 	}
@@ -271,12 +276,16 @@ public class Ghost implements Runnable {
 		if(behavior != 'f'){		
 		Game.lab.objectsPresent[ghostx][ghosty] = currSquare;
 		if (shortest[ghostx - 1][ghosty] == place - 1) {
+			ghostDirection = 'u';
 			ghostx = ghostx - 1;
 		} else if (shortest[ghostx + 1][ghosty] == place - 1) {
+			ghostDirection = 'd';
 			ghostx = ghostx + 1;
 		} else if (shortest[ghostx][ghosty - 1] == place - 1) {
+			ghostDirection = 'l';
 			ghosty = ghosty - 1;
 		} else if (shortest[ghostx][ghosty + 1] == place - 1) {
+			ghostDirection = 'r';
 			ghosty = ghosty + 1;
 		}
 		}
@@ -347,21 +356,21 @@ public class Ghost implements Runnable {
 				if (Labyrinth.gameMode.equals("gameOver")||Labyrinth.gameMode.equals("gameWin")){
 					return;
 				}
-				if (PacMan.fleeMode){
-					if (timeFlee < 5000){
+				if (PacMan.fleeMode) {
+					if (timeFlee < 5000) {
 						timeFlee = timeFlee + time;
 						behavior = 'f';
 					} else {
 						PacMan.fleeMode = false;
-						timeFlee = 0;
 					}
-				} else 
-				if (timeChase < 25000) {
+				} else if (timeChase < 25000) {
 					timeChase = timeChase + time;
 					timeWander = 0;
+					timeFlee = 0;
 					behavior = 'c';
 				} else if (timeWander < 15000) {
 					timeWander = timeWander + time;
+					timeFlee = 0;
 					behavior = 'w';
 				} else {
 					timeChase = 0;
